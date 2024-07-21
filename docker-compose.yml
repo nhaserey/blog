@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+    postgres:
+        container_name: pg-db
+        image: postgres
+        environment:
+            POSTGRES_USER: blog
+            POSTGRES_PASSWORD: blog@1234
+            POSTGRES_DB: blog
+        ports:
+            - 5432:5432
+        volumes:
+            - ./pg_data:/var/lib/postgresql/data
+        networks:
+            - default
+    pg-admin:
+        container_name: pg_admins
+        image: dpage/pgadmin4:8
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@email.com
+            PGADMIN_DEFAULT_PASSWORD: admin
+            PGADMIN_LISTEN_PORT: 5050
+        ports:
+            - 5050:5050
+        volumes:
+            - ./pgadmin_data:/data/db
+        depends_on:
+            - postgres
+        networks:
+            - default
+volumes:
+    pgadmin_data:
+        driver: 'local'
+    pg_data:
+        driver: 'local'
+networks:
+  spring-demo:
+    driver: 'bridge'
+  default:
+    driver: 'bridge'
